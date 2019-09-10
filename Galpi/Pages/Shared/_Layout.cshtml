@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <header>
+        <a asp-area="" asp-page="/Index"></a><h1>Galpi</h1>
+        <nav>
+            <partial name="_LoginPartial" />
+        </nav>
+    </header>
+<section>
+    @RenderBody()
+</section>
+@if (IsSectionDefined("Scripts")) {
+    @RenderSection("Scripts")
+}
+</body>
+</html>

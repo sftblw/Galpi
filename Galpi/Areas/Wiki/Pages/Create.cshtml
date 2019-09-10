@@ -1,0 +1,16 @@
+﻿@page
+@using Galpi.Areas.Wiki
+@model Galpi.Areas.Wiki.Pages.IndexModel
+@{
+    string title = @RouteData.Values.TitleDecoded();
+    ViewData["Title"] = $"Create - {title}";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<section>
+    @if (Model.Response.StatusCode == 404)
+    {
+        <p>Wanna create? I disagree you :)</p>
+    }
+</section>

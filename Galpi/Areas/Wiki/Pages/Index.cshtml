@@ -1,0 +1,17 @@
+﻿@page "{title?}"
+@using System.Net
+@using Galpi.Areas.Wiki
+@model Galpi.Areas.Wiki.Pages.IndexModel
+@{
+    string title = @RouteData.Values.TitleDecoded();
+    ViewData["Title"] = title;
+}
+
+<h2>@title</h2>
+
+<section>
+    @if (Model.Response.StatusCode == 404)
+    {
+        <p>There wasn't one, but there is no one. <a asp-area="Wiki" asp-page="Create" asp-route-title="@title">Wanna create?</a></p>
+    }
+</section>
