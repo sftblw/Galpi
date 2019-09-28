@@ -9,7 +9,7 @@ namespace Galpi.Areas.Wiki
 {
     public static class WikiRouting
     {
-        public static void ConfigureOptions(RazorPagesOptions options)
+        public static void ConfigureWikiRouting(this RazorPagesOptions options)
         {
             options.Conventions.AddAreaPageRoute("Wiki", "/Create", "/Wiki/{title}/Create");
         }

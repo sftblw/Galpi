@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Galpi.Areas.Wiki;
+﻿using Galpi.Areas.Wiki;
 using Galpi.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Galpi
 {
@@ -37,34 +30,23 @@ namespace Galpi
         /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            // VS Template
-            // "This lambda determines whether user consent for non-essential cookies is needed for a given request."
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
             // NpgSql
             services.AddDbContext<GalpiDbContext>(options =>
-            {
-                options.UseNpgsql(
-                    Configuration.GetConnectionString("DefaultConnection"));
-            });
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             // ASP.NET Core Identity(login system)
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<GalpiDbContext>();
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddRazorPagesOptions(options => { WikiRouting.ConfigureOptions(options); });
+            services.AddRazorPages(options => options.ConfigureWikiRouting());
         }
 
         /// <summary>
         /// Configures HTTP request-response pipeline
         /// </summary>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // dev env
             if (env.IsDevelopment())
@@ -88,9 +70,15 @@ namespace Galpi
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseAuthentication();
+            app.UseRouting();
 
-            app.UseMvc();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
         }
     }
 }
